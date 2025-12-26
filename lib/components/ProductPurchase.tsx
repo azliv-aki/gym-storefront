@@ -7,10 +7,16 @@ export default function ProductPurchase({
   selection,
   quantity,
   onQuantityChange,
+  onPurchase,
 }: {
   selection: VariantSelectionResult
   quantity: number
   onQuantityChange: (value: number) => void
+  onPurchase: (payload: {
+    variantId: string
+    quantity: number
+    purchaseState: 'available' | 'preorder'
+  }) => void
 }) {
   const { variant, isComplete, purchaseState } = selection
 
@@ -32,9 +38,10 @@ export default function ProductPurchase({
 
       <button
         onClick={() => {
-          console.log(purchaseState, {
+          onPurchase({
             variantId: variant.id,
             quantity,
+            purchaseState,
           })
         }}
       >

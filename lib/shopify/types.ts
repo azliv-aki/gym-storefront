@@ -32,3 +32,28 @@ export type Product = {
   }
   variants: Variant[]
 }
+
+export type Cart = {
+  id: string
+  checkoutUrl: string
+  lines: CartLine[]
+  cost: {
+    totalAmount: Money
+  }
+}
+
+export type CartLine = {
+  id: string
+  quantity: number
+  merchandise: {
+    id: string
+    title: string
+    product: {
+      id: string
+      title: string
+    }
+  }
+  cost: {
+    totalAmount: Money
+  }
+}

@@ -1,4 +1,5 @@
 import { getProductByHandle } from '@/lib/shopify/products'
+import { addToCart } from '@/lib/shopify/cart'
 import ProductClient from './ProductClient'
 
 export const dynamic = 'force-dynamic'
@@ -34,10 +35,10 @@ export default async function ProductPage(props: PageProps) {
         />
       )}
 
-      // クライアントに必要なデータのみ渡す
       <ProductClient
         gymId={gymId}
         product={product}
+        addToCart={addToCart}
       />
     </main>
   )
