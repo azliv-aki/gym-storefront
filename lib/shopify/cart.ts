@@ -141,8 +141,7 @@ export async function removeCartLine({ lineId }: { lineId: string }) {
 
 // 決済直前にカートを再チェック
 export async function proceedToCheckout(): Promise<
-  | { ok: true; checkoutUrl: string }
-  | { ok: false; reason: string }
+  { ok: true; checkoutUrl: string } | { ok: false; reason: string }
 > {
   const cookieStore = await cookies()
   const cartId = cookieStore.get('cartId')?.value
@@ -172,6 +171,22 @@ export async function proceedToCheckout(): Promise<
   for (const line of cart.lines.nodes) {
     if (!line.merchandise) {
       return { ok: false, reason: '販売終了した商品があります' }
+    }
+  }
+
+  // 在庫チェック
+  const invalidLine = cart.lines.nodes.find((line) => {
+    const variant = line.merchandise
+
+    const canPurchase = variant.availableForSale || variant.sellingPlanAllocations?.nodes.length > 0
+
+    return !canPurchase
+  })
+
+  if (invalidLine) {
+    return {
+      ok: false,
+      reason: `${invalidLine.merchandise.product.title} は現在購入できません`,
     }
   }
 

@@ -49,7 +49,7 @@ export const PRODUCT_BY_HANDLE = `
       }
     }
   }
-`;
+`
 
 /* =====================
  * Cart Create
@@ -115,6 +115,15 @@ export const CART_QUERY = `
             ... on ProductVariant {
               id
               title
+              availableForSale
+              sellingPlanAllocations(first: 1) {
+                nodes {
+                  sellingPlan {
+                    id
+                    name
+                  }
+                }
+              }
               product {
                 title
               }
