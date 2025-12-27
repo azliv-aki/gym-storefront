@@ -10,6 +10,7 @@ export async function getProductByHandle(handle: string) {
   const data = await shopifyFetch<{
     productByHandle: {
       id: string
+      handle: string
       title: string
       description: string
       images: {
@@ -29,6 +30,7 @@ export async function getProductByHandle(handle: string) {
 
   return {
     id: product.id,
+    handle: product.handle,
     title: product.title,
     description: product.description,
     image: product.images.nodes[0] ?? null,

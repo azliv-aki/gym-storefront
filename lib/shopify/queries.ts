@@ -2,6 +2,7 @@ export const PRODUCT_BY_HANDLE = `
   query ProductByHandle($handle: String!) {
     productByHandle(handle: $handle) {
       id
+      handle
       title
       description
 

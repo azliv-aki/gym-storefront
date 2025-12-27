@@ -1,6 +1,7 @@
 // lib/shopify/cart.ts
 'use server'
 
+import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { shopifyFetch } from './client'
 import {
@@ -12,7 +13,15 @@ import {
 } from './queries'
 import { Cart } from './types'
 
-export async function addToCart({ variantId, quantity }: { variantId: string; quantity: number }) {
+export async function addToCart({
+  variantId,
+  quantity,
+  gymId,
+}: {
+  variantId: string
+  quantity: number
+  gymId: string
+}) {
   const cookieStore = await cookies()
   const cartId = cookieStore.get('cartId')?.value
 
@@ -29,7 +38,7 @@ export async function addToCart({ variantId, quantity }: { variantId: string; qu
         ],
       })
 
-      return cartId
+      redirect(`/gym/${gymId}/cart`)
     } catch (error) {
       // cartId が壊れてた → 下で作り直す
       cookieStore.delete('cartId')
@@ -59,7 +68,7 @@ export async function addToCart({ variantId, quantity }: { variantId: string; qu
     sameSite: 'lax',
   })
 
-  return newCartId
+  redirect(`/gym/${gymId}/cart`)
 }
 
 // カート情報を取得
@@ -78,7 +87,6 @@ export async function getCart(): Promise<Cart | null> {
 
   // ④ cart が無効 / 失効していた場合
   if (!data.cart) {
-    cookieStore.delete('cartId')
     return null
   }
 
@@ -97,7 +105,6 @@ export async function getCart(): Promise<Cart | null> {
 
   // 🧠 checkoutUrl が無効
   if (!cart.checkoutUrl) {
-    cookieStore.delete('cartId')
     return null
   }
 

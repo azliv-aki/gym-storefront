@@ -11,7 +11,7 @@ type PageProps = {
 }
 
 export default async function CartPage({ params }: PageProps) {
-  const { gymId } = params
+  const { gymId } = await params
 
   const cart = await getCart()
 
