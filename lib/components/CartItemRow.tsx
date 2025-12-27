@@ -7,10 +7,12 @@ export default function CartItemRow({
   line,
   onQuantityChange,
   onRemove,
+  disabled,
 }: {
   line: CartLine
   onQuantityChange: (lineId: string, quantity: number) => void
   onRemove: (lineId: string) => void
+  disabled?: boolean
 }) {
   return (
     <div style={{ marginBottom: 16 }}>
@@ -20,9 +22,10 @@ export default function CartItemRow({
       <QuantitySelector
         value={line.quantity}
         onChange={(q) => onQuantityChange(line.id, q)}
+        disabled={disabled}
       />
 
-      <button onClick={() => onRemove(line.id)}>
+      <button onClick={() => onRemove(line.id)} disabled={disabled}>
         削除
       </button>
     </div>
