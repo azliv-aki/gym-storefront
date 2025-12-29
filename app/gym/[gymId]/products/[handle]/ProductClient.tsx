@@ -12,7 +12,6 @@ type PickupMethod = 'gym' | 'shipping'
 type PickupContext = {
   cartPickupMode: 'empty' | 'gym' | 'shipping'
   defaultPickupMethod: PickupMethod
-  canSwitch: boolean
   allowGymPickup: boolean
 }
 
@@ -107,7 +106,6 @@ export default function ProductClient({
             受取方法
             <select
               value={pickupMethod}
-              disabled={!pickupContext.canSwitch}
               onChange={(e) => setPickupMethod(e.target.value as PickupMethod)}
               style={{ marginLeft: 8 }}
             >

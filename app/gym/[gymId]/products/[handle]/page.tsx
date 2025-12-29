@@ -15,15 +15,8 @@ type PageProps = {
 type PickupMethod = 'gym' | 'shipping'
 
 type PickupContext = {
-  /** 今のカート全体としての受取モード */
-  cartPickupMode: 'empty' | 'gym' | 'shipping'
-
   /** この商品ページでのデフォルト選択 */
   defaultPickupMethod: PickupMethod
-
-  /** ユーザーが切り替え可能か */
-  canSwitch: boolean
-
   /** このジムがジム受取を対応可能か */
   allowGymPickup: boolean
 }
@@ -40,59 +33,16 @@ export default async function ProductPage(props: PageProps) {
 
   const gym = getGym(gymId)
 
-  // カート情報を取得
-  const cart = await getCart()
-
   // =========================
-  // カート内の世界線判定
-  // =========================
-
-  const hasGymPickInCart =
-    cart?.lines.some((line) => line.merchandise?.product?.handle?.endsWith('-gympick')) ?? false
-
-  const hasShippingInCart =
-    cart?.lines.some((line) => !line.merchandise?.product?.handle?.endsWith('-gympick')) ?? false
-
-  let cartPickupMode: PickupContext['cartPickupMode'] = 'empty'
-  if (hasGymPickInCart && hasShippingInCart) {
-    // 異常状態（基本起きない想定）
-    // shipping に倒す or エラー扱い
-    cartPickupMode = 'shipping'
-  } else if (hasGymPickInCart) {
-    cartPickupMode = 'gym'
-  } else if (hasShippingInCart) {
-    cartPickupMode = 'shipping'
-  }
-
-  // =========================
-  // この商品でジム受取を許可するか
-  // ・商品ハンドルでは判定しない
-  // ・gym 設定だけを見る
+  // ジムがジム受取対応ならデフォルトはジム受取
   // =========================
   const allowGymPickup = gym.allowGymPickup
-
-  // =========================
-  // デフォルト選択 & 切替可否
-  // =========================
-  let defaultPickupMethod: PickupMethod
-  let canSwitch: boolean
-
-  if (cartPickupMode === 'gym') {
-    defaultPickupMethod = 'gym'
-    canSwitch = false
-  } else if (cartPickupMode === 'shipping') {
-    defaultPickupMethod = 'shipping'
-    canSwitch = false
-  } else {
-    // cart empty
-    defaultPickupMethod = allowGymPickup ? 'gym' : 'shipping'
-    canSwitch = true
-  }
+  const defaultPickupMethod: PickupMethod = allowGymPickup
+    ? 'gym'
+    : 'shipping'
 
   const pickupContext: PickupContext = {
-    cartPickupMode,
     defaultPickupMethod,
-    canSwitch,
     allowGymPickup,
   }
 
